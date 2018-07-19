@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.dao.EnterpriseTalentMapper">
+    <resultMap id="BaseResultMap" type="com.ssm.entity.EnterpriseTalent">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="workingLife" jdbcType="INTEGER" property="workingLife"/>
+        <result column="workExperience" jdbcType="VARCHAR" property="workExperience"/>
+        <result column="personalProfile" jdbcType="VARCHAR" property="personalProfile"/>
+        <result column="departmentId" jdbcType="INTEGER" property="departmentId"/>
+        <result column="graduateSchool" jdbcType="VARCHAR" property="graduateSchool"/>
+    </resultMap>
+    <resultMap id="WithDeptResultMap" type="com.ssm.entity.EnterpriseTalent">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="workingLife" jdbcType="INTEGER" property="workingLife"/>
+        <result column="workExperience" jdbcType="VARCHAR" property="workExperience"/>
+        <result column="personalProfile" jdbcType="VARCHAR" property="personalProfile"/>
+        <result column="departmentId" jdbcType="INTEGER" property="departmentId"/>
+        <result column="graduateSchool" jdbcType="VARCHAR" property="graduateSchool"/>
+        <!--联合查询的部门字段-->
+        <association property="department" javaType="Department">
+            <result column="deptId" property="id"/>
+            <result column="deptName" property="name"/>
+        </association>
+
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    id, name, workingLife, workExperience, personalProfile, departmentId, graduateSchool
+  </sql>
+    <select id="selectByExample" parameterType="com.ssm.entity.EnterpriseTalentExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from enterprisetalent
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+        <if test="limit != null">
+            <if test="offset != null">
+                limit ${offset}, ${limit}
+            </if>
+            <if test="offset == null">
+                limit ${limit}
+            </if>
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from enterprisetalent
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from enterprisetalent
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.ssm.entity.EnterpriseTalentExample">
+        delete from enterprisetalent
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.ssm.entity.EnterpriseTalent">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into enterprisetalent (name, workingLife, workExperience,
+        personalProfile, departmentId, graduateSchool
+        )
+        values (#{name,jdbcType=VARCHAR}, #{workingLife,jdbcType=INTEGER}, #{workExperience,jdbcType=VARCHAR},
+        #{personalProfile,jdbcType=VARCHAR}, #{departmentId,jdbcType=INTEGER}, #{graduateSchool,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.ssm.entity.EnterpriseTalent">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into enterprisetalent
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                name,
+            </if>
+            <if test="workingLife != null">
+                workingLife,
+            </if>
+            <if test="workExperience != null">
+                workExperience,
+            </if>
+            <if test="personalProfile != null">
+                personalProfile,
+            </if>
+            <if test="departmentId != null">
+                departmentId,
+            </if>
+            <if test="graduateSchool != null">
+                graduateSchool,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="workingLife != null">
+                #{workingLife,jdbcType=INTEGER},
+            </if>
+            <if test="workExperience != null">
+                #{workExperience,jdbcType=VARCHAR},
+            </if>
+            <if test="personalProfile != null">
+                #{personalProfile,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentId != null">
+                #{departmentId,jdbcType=INTEGER},
+            </if>
+            <if test="graduateSchool != null">
+                #{graduateSchool,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.ssm.entity.EnterpriseTalentExample" resultType="java.lang.Long">
+        select count(*) from enterprisetalent
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update enterprisetalent
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=INTEGER},
+            </if>
+            <if test="record.name != null">
+                name = #{record.name,jdbcType=VARCHAR},
+            </if>
+            <if test="record.workingLife != null">
+                workingLife = #{record.workingLife,jdbcType=INTEGER},
+            </if>
+            <if test="record.workExperience != null">
+                workExperience = #{record.workExperience,jdbcType=VARCHAR},
+            </if>
+            <if test="record.personalProfile != null">
+                personalProfile = #{record.personalProfile,jdbcType=VARCHAR},
+            </if>
+            <if test="record.departmentId != null">
+                departmentId = #{record.departmentId,jdbcType=INTEGER},
+            </if>
+            <if test="record.graduateSchool != null">
+                graduateSchool = #{record.graduateSchool,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update enterprisetalent
+        set id = #{record.id,jdbcType=INTEGER},
+        name = #{record.name,jdbcType=VARCHAR},
+        workingLife = #{record.workingLife,jdbcType=INTEGER},
+        workExperience = #{record.workExperience,jdbcType=VARCHAR},
+        personalProfile = #{record.personalProfile,jdbcType=VARCHAR},
+        departmentId = #{record.departmentId,jdbcType=INTEGER},
+        graduateSchool = #{record.graduateSchool,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ssm.entity.EnterpriseTalent">
+        update enterprisetalent
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="workingLife != null">
+                workingLife = #{workingLife,jdbcType=INTEGER},
+            </if>
+            <if test="workExperience != null">
+                workExperience = #{workExperience,jdbcType=VARCHAR},
+            </if>
+            <if test="personalProfile != null">
+                personalProfile = #{personalProfile,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentId != null">
+                departmentId = #{departmentId,jdbcType=INTEGER},
+            </if>
+            <if test="graduateSchool != null">
+                graduateSchool = #{graduateSchool,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ssm.entity.EnterpriseTalent">
+    update enterprisetalent
+    set name = #{name,jdbcType=VARCHAR},
+      workingLife = #{workingLife,jdbcType=INTEGER},
+      workExperience = #{workExperience,jdbcType=VARCHAR},
+      personalProfile = #{personalProfile,jdbcType=VARCHAR},
+      departmentId = #{departmentId,jdbcType=INTEGER},
+      graduateSchool = #{graduateSchool,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <sql id="WithDept_Column_List">
+    enterprisetalent.id, enterprisetalent.name, workingLife, workExperience, personalProfile, departmentId, graduateSchool ,department.id, department.name
+  </sql>
+    <select id="selectByExampleWithDept" parameterType="com.ssm.entity.EnterpriseTalentExample"
+            resultMap="WithDeptResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="WithDept_Column_List"/>
+        from enterprisetalent,department
+        WHERE enterprisetalent.departmentId = department.id
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+        <if test="limit != null">
+            <if test="offset != null">
+                limit ${offset}, ${limit}
+            </if>
+            <if test="offset == null">
+                limit ${limit}
+            </if>
+        </if>
+    </select>
+    <select id="selectByPrimaryKeyWithDept" resultMap="WithDeptResultMap">
+        select
+        <include refid="WithDept_Column_List"/>
+        from enterprisetalent ,department
+        WHERE enterprisetalent.departmentId = department.id AND enterprisetalent.id = #{id,jdbcType=INTEGER}
+
+    </select>
+    <select id="selectWithDept" resultMap="WithDeptResultMap">
+        select
+        enterprisetalent.id,
+        enterprisetalent.`name`,
+        enterprisetalent.workingLife,
+        enterprisetalent.workExperience,
+        enterprisetalent.personalProfile,
+        enterprisetalent.departmentId,
+        enterprisetalent.graduateSchool,
+        department.id deptId,
+        department.`name` deptName
+        from enterprisetalent
+        INNER JOIN department ON enterprisetalent.departmentId = department.id
+        <where>
+            <if test="departmentId != null and departmentId != 123">
+                enterprisetalent.departmentId=#{departmentId}
+            </if>
+            <if test="departmentId == null or departmentId == 123">
+                enterprisetalent.departmentId BETWEEN 1 AND 3
+            </if>
+
+        </where>
+        ORDER BY
+        enterprisetalent.workingLife DESC
+    </select>
+</mapper>
